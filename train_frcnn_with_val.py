@@ -28,7 +28,7 @@ parser = OptionParser()
 
 parser.add_option("-p", "--path", dest="train_path", help="Path to training data.")
 parser.add_option("-o", "--parser", dest="parser", help="Parser to use. One of simple or pascal_voc",
-                  default="pascal_voc")
+                  default="simple")
 parser.add_option("-n", "--num_rois", dest="num_rois", help="Number of RoIs to process at once.", default=32)
 parser.add_option("--network", dest="network", help="Base network to use. Supports vgg or resnet50.", default='resnet50')
 parser.add_option("--hf", dest="horizontal_flips", help="Augment with horizontal flips in training. (Default=false).", action="store_true", default=False)
@@ -43,7 +43,7 @@ parser.add_option("--output_weight_path", dest="output_weight_path", help="Outpu
 parser.add_option("--input_weight_path", dest="input_weight_path", help="Input path for weights. If not specified, will try to load default weights provided by keras.")
 
 (options, args) = parser.parse_args()
-options.parser = "simple"
+# options.parser = "simple"
 # options.train_path = "balanced_data.txt"
 # options.train_path = "data_semEscala.txt"
 # options.network = "darknet"
