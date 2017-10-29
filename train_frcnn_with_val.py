@@ -39,7 +39,7 @@ parser.add_option("--num_epochs", dest="num_epochs", help="Number of epochs.", d
 parser.add_option("--config_filename", dest="config_filename",
                   help="Location to store all the metadata related to the training (to be used when testing).",
                   default="config.pickle")
-parser.add_option("--output_weight_path", dest="output_weight_path", help="Output path for weights.", default='./model_frcnn.hdf5')
+parser.add_option("--output_weight_path", dest="output_weight_path", help="Output path for weights.", default='./checkpoints/model_frcnn.hdf5')
 parser.add_option("--input_weight_path", dest="input_weight_path", help="Input path for weights. If not specified, will try to load default weights provided by keras.")
 
 (options, args) = parser.parse_args()
@@ -415,6 +415,9 @@ for epoch_num in range(num_epochs):
                         best_loss = curr_loss
                         best_loss_epoch=epoch_num
                         model_all.save_weights(C.model_path)
+
+                        model_path = C.model_path[:-5] + "_epoch_" + str(epoch_num) + ".hdf5"
+                        model_all.save_weights(model_path)
                     start_time = time.time()
                     iter_num = 0
                     break
@@ -422,3 +425,4 @@ for epoch_num in range(num_epochs):
                 pass
 
 print('Training complete, exiting.')
+print("The best epoch=".format(best_loss_epoch))
