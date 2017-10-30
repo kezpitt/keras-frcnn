@@ -26,6 +26,7 @@ sys.setrecursionlimit(40000)
 
 parser = OptionParser()
 
+parser.add_option("-l", "--log", dest="log_file", help="Path to log file.")
 parser.add_option("-p", "--path", dest="train_path", help="Path to training data.")
 parser.add_option("-o", "--parser", dest="parser", help="Parser to use. One of simple or pascal_voc",
                   default="simple")
@@ -89,6 +90,8 @@ if options.input_weight_path:
 else:
     # set the path to weights based on backend and model
     C.base_net_weights = nn.get_weight_path()
+
+f_writer = open(options.log_file, 'w+')
 
 all_imgs, classes_count, class_mapping = get_data(options.train_path)
 
@@ -171,7 +174,7 @@ model_all.compile(optimizer='sgd', loss='mae')
 
 epoch_length = len(train_imgs)
 validation_epoch_length=len(val_imgs)
-validation_interval=3
+validation_interval=1
 num_epochs = int(options.num_epochs)
 iter_num = 0
 
@@ -303,13 +306,25 @@ for epoch_num in range(num_epochs):
                     print('Elapsed time: {}'.format(time.time() - start_time))
                     print("best loss for training: %.2f"%best_loss_training)
 
+                    f_writer.write('[INFO TRAINING]\n')
+                    f_writer.write('Mean number of bounding boxes from RPN overlapping ground truth boxes: {}\n'.format(
+                        mean_overlapping_bboxes))
+                    f_writer.write('Classifier accuracy for bounding boxes from RPN: {}\n'.format(class_acc))
+                    f_writer.write('Loss RPN classifier: {}\n'.format(loss_rpn_cls))
+                    f_writer.write('Loss RPN regression: {}\n'.format(loss_rpn_regr))
+                    f_writer.write('Loss Detector classifier: {}\n'.format(loss_class_cls))
+                    f_writer.write('Loss Detector regression: {}\n'.format(loss_class_regr))
+                    f_writer.write('Elapsed time: {}\n'.format(time.time() - start_time))
+                    f_writer.write("best loss for training: %.2f\n" % best_loss_training)
+
                 curr_loss = loss_rpn_cls + loss_rpn_regr + loss_class_cls + loss_class_regr
                 iter_num = 0
                 start_time = time.time()
                 write_log(tbCallBack, train_names, [loss_rpn_cls,loss_rpn_regr,loss_class_cls,loss_class_regr,curr_loss,class_acc], epoch_num)
                 if curr_loss < best_loss_training:
                         if C.verbose:
-                            print('Total loss decreased from {} to {}, saving weights'.format(best_loss_training,curr_loss))
+                            print('Epoch_{}: Total loss decreased from {} to {}, saving weights'.format(epoch_num, best_loss_training,curr_loss))
+                            f_writer.write('Total loss decreased from {} to {}, saving weights\n'.format(best_loss_training,curr_loss))
                         best_loss_training = curr_loss
                         model_path=C.model_path[:-5]+"_training.hdf5"
                         model_all.save_weights(model_path)
@@ -319,6 +334,8 @@ for epoch_num in range(num_epochs):
         except Exception as e:
             print("Exception1: Train_frcnn")
             print('Exception: {}'.format(e))
+            f_writer.write("Exception1: Train_frcnn\n")
+            f_writer.write('Exception: {}\n'.format(e))
             pass
 
     # validation
@@ -407,11 +424,23 @@ for epoch_num in range(num_epochs):
                         print('Loss Detector classifier: {}'.format(loss_class_cls))
                         print('Loss Detector regression: {}'.format(loss_class_regr))
                         print("current loss: %.2f, best loss: %.2f at epoch: %d"%(curr_loss,best_loss,best_loss_epoch))
-                        print('Elapsed time: {}'.format(time.time() - start_time))               
+                        print('Elapsed time: {}'.format(time.time() - start_time))
+
+                        f_writer.write('[INFO VALIDATION]')
+                        f_writer.write('Mean number of bounding boxes from RPN overlapping ground truth boxes: {}'.format(
+                            mean_overlapping_bboxes))
+                        f_writer.write('Classifier accuracy for bounding boxes from RPN: {}'.format(class_acc))
+                        f_writer.write('Loss RPN classifier: {}'.format(loss_rpn_cls))
+                        f_writer.write('Loss RPN regression: {}'.format(loss_rpn_regr))
+                        f_writer.write('Loss Detector classifier: {}'.format(loss_class_cls))
+                        f_writer.write('Loss Detector regression: {}'.format(loss_class_regr))
+                        f_writer.write("current loss: %.2f, best loss: %.2f at epoch: %d" % (curr_loss, best_loss, best_loss_epoch))
+                        f_writer.write('Elapsed time: {}'.format(time.time() - start_time))
     
                     if curr_loss < best_loss:
                         if C.verbose:
-                            print('Total loss decreased from {} to {}, saving weights'.format(best_loss,curr_loss))
+                            print('Epoch_{}: Total loss decreased from {} to {}, saving weights'.format(epoch_num, best_loss,curr_loss))
+                            f_writer.write('Total loss decreased from {} to {}, saving weights'.format(best_loss, curr_loss))
                         best_loss = curr_loss
                         best_loss_epoch=epoch_num
                         model_all.save_weights(C.model_path)
@@ -421,8 +450,13 @@ for epoch_num in range(num_epochs):
                     start_time = time.time()
                     iter_num = 0
                     break
-            except:
+            except Exception as e2:
+                print("Exception2: validate_frcnn")
+                print('Exception2: {}'.format(e))
+                f_writer.write("Exception2: Train_frcnn\n")
+                f_writer.write('Exception2: {}\n'.format(e2))
                 pass
 
+f_writer.close()
 print('Training complete, exiting.')
 print("The best epoch=".format(best_loss_epoch))
