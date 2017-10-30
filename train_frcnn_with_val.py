@@ -26,7 +26,7 @@ sys.setrecursionlimit(40000)
 
 parser = OptionParser()
 
-parser.add_option("-l", "--log", dest="log_file", help="Path to log file.")
+parser.add_option("-l", "--log", dest="log_file", help="Path to log file.", default="./log_train.txt")
 parser.add_option("-p", "--path", dest="train_path", help="Path to training data.")
 parser.add_option("-o", "--parser", dest="parser", help="Parser to use. One of simple or pascal_voc",
                   default="simple")
