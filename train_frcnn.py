@@ -263,14 +263,14 @@ for epoch_num in range(num_epochs):
                     print('Loss Detector regression: {}'.format(loss_class_regr))
                     print('Elapsed time: {}'.format(time.time() - start_time))
 
-                    f_writer.write('Mean number of bounding boxes from RPN overlapping ground truth boxes: {}'.format(
-                        mean_overlapping_bboxes) + '\n')
-                    f_writer.write('Classifier accuracy for bounding boxes from RPN: {}'.format(class_acc) + '\n')
-                    f_writer.write('Loss RPN classifier: {}'.format(loss_rpn_cls))
-                    f_writer.write('Loss RPN regression: {}'.format(loss_rpn_regr))
-                    f_writer.write('Loss Detector classifier: {}'.format(loss_class_cls))
-                    f_writer.write('Loss Detector regression: {}'.format(loss_class_regr))
-                    f_writer.write('Elapsed time: {}'.format(time.time() - start_time))
+                    f_writer.write('Mean number of bounding boxes from RPN overlapping ground truth boxes: {}\n'.format(
+                        mean_overlapping_bboxes))
+                    f_writer.write('Classifier accuracy for bounding boxes from RPN: {}\n'.format(class_acc))
+                    f_writer.write('Loss RPN classifier: {}\n'.format(loss_rpn_cls))
+                    f_writer.write('Loss RPN regression: {}\n'.format(loss_rpn_regr))
+                    f_writer.write('Loss Detector classifier: {}\n'.format(loss_class_cls))
+                    f_writer.write('Loss Detector regression: {}\n'.format(loss_class_regr))
+                    f_writer.write('Elapsed time: {}\n'.format(time.time() - start_time))
 
                 curr_loss = loss_rpn_cls + loss_rpn_regr + loss_class_cls + loss_class_regr
                 iter_num = 0
