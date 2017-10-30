@@ -23,7 +23,7 @@ parser = OptionParser()
 parser.add_option("-p", "--path", dest="train_path", help="Path to training data.")
 parser.add_option("-l", "--log", dest="log_file", help="Path to log file.")
 parser.add_option("-o", "--parser", dest="parser", help="Parser to use. One of simple or pascal_voc",
-                  default="pascal_voc")
+                  default="simple")
 parser.add_option("-n", "--num_rois", type="int", dest="num_rois", help="Number of RoIs to process at once.", default=32)
 parser.add_option("--network", dest="network", help="Base network to use. Supports vgg or resnet50.", default='resnet50')
 parser.add_option("--hf", dest="horizontal_flips", help="Augment with horizontal flips in training. (Default=false).", action="store_true", default=False)
@@ -107,6 +107,7 @@ val_imgs = [s for s in all_imgs if s['imageset'] == 'test']
 print('Num train samples {}'.format(len(train_imgs)))
 print('Num val samples {}'.format(len(val_imgs)))
 
+f_writer = open(options.log_file, 'w+')
 
 data_gen_train = data_generators.get_anchor_gt(train_imgs, classes_count, C, nn.get_img_output_length, K.image_dim_ordering(), mode='train')
 data_gen_val = data_generators.get_anchor_gt(val_imgs, classes_count, C, nn.get_img_output_length,K.image_dim_ordering(), mode='val')
@@ -164,7 +165,6 @@ print('Starting training')
 
 vis = True
 
-f_writer = open(options.log_file, 'w+')
 for epoch_num in range(num_epochs):
 
     progbar = generic_utils.Progbar(epoch_length)
