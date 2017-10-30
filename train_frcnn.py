@@ -77,6 +77,8 @@ else:
     # set the path to weights based on backend and model
     C.base_net_weights = nn.get_weight_path()
 
+f_writer = open(options.log_file, 'w+')
+
 all_imgs, classes_count, class_mapping = get_data(options.train_path)
 
 if 'bg' not in classes_count:
@@ -106,8 +108,6 @@ val_imgs = [s for s in all_imgs if s['imageset'] == 'test']
 
 print('Num train samples {}'.format(len(train_imgs)))
 print('Num val samples {}'.format(len(val_imgs)))
-
-f_writer = open(options.log_file, 'w+')
 
 data_gen_train = data_generators.get_anchor_gt(train_imgs, classes_count, C, nn.get_img_output_length, K.image_dim_ordering(), mode='train')
 data_gen_val = data_generators.get_anchor_gt(val_imgs, classes_count, C, nn.get_img_output_length,K.image_dim_ordering(), mode='val')
