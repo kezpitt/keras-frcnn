@@ -456,6 +456,8 @@ for epoch_num in range(num_epochs):
                 f_writer.write("Exception2: Train_frcnn\n")
                 f_writer.write('Exception2: {}\n'.format(e2))
                 pass
+    f_writer.close()
+    f_writer = open(options.log_file, 'a')
 
 f_writer.close()
 print('Training complete, exiting.')
