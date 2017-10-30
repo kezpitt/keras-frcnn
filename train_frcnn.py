@@ -277,10 +277,9 @@ for epoch_num in range(num_epochs):
                 start_time = time.time()
 
                 if curr_loss < best_loss:
-                    if epoch_num % 10 == 0:
-                        model_all.save_weights('checkpoints/epoch_' + "_".join(
-                            [str(epoch_num), str(curr_loss), str(loss_rpn_cls), str(loss_rpn_regr), str(loss_class_cls),
-                             str(loss_class_regr), str(class_acc), ".hdf5"]))
+                    model_all.save_weights('checkpoints/epoch_' + "_".join(
+                        [str(int(epoch_num/10)), str(curr_loss), str(loss_rpn_cls), str(loss_rpn_regr), str(loss_class_cls),
+                         str(loss_class_regr), str(class_acc), ".hdf5"]))
                     if C.verbose:
                         print('Total loss decreased from {} to {}, saving weights'.format(best_loss,curr_loss))
                     best_loss = curr_loss
